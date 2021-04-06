@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+    <head>
+        <link rel="shortcut icon" href="#"/>
+        <meta charset="utf-8">
+        <title>uploadFile</title>
+        <link rel="stylesheet" type="text/css" href="/statics/scss/jsoneditor.scss" />
+        <script src="/statics/js/JSONEditor.js"></script>
+        <script src="/statics/bootstrap/js/jquery-3.2.1.min.js"></script>
+        <script>
+            var data = document.getElementById("jsondata").innerText
+            var yamldata = document.getElementById("yamldata").innerText
+
+            function parse2(str) {
+                // 设置缩进为2个空格
+                str = JSON.stringify(JSON.parse(str), null, 2);
+                str = str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                return str.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    var cls = 'number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'key';
+                        } else {
+                            cls = 'string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            }
+            $('#jsonPre').html(parse2(data));
+            $('#yamlPre').html(parse2(yamldata));
+
+        </script>
+
+
+        <style>
+        /* 方法1：设置textarea合适的宽高 */
+        #jsonPree {
+            float: left;
+            margin-right: 20px;
+            width: 40%;
+            height: 70vh;
+            outline: none;
+            padding: 5px;
+        }
+
+
+        /* 方法2：自定义高亮样式 */
+        #jsonPre,#yamlPre {
+            float: left;
+            width: 40%;
+            height: 70vh;
+            outline: 1px solid #ccc;
+            padding: 5px;
+            overflow: scroll;
+        }
+
+        .string {
+            color: green;
+        }
+
+        .number {
+            color: darkorange;
+        }
+
+        .boolean {
+            color: blue;
+        }
+
+        .null {
+            color: magenta;
+        }
+
+        .key {
+            color: red;
+        }
+    </style>
+
+    </head>
+    <body>
+
+        <form method="POST" action="/upload/"  enctype="multipart/form-data">
+            <input type="file" name="info_file">
+            <input class="btn btn-default" type="submit" value="提交" />
+        </form>
+
+        <h4>解析前</h4>
+        <span id="jsondata" hidden>{{ name }}</span>
+        <pre id="jsonPre"></pre>
+        <br>
+        <h4>解析后</h4>
+        <span id="yamldata" hidden>{{ yaml_file }}</span>
+        <pre id="yamlPre"></pre>
+
+        <div id="jsoneditor" style="width: 400px; height: 400px;"></div>
+
+         <script>
+            // 创建对象
+            var container = document.getElementById("jsoneditor");
+            var options = {
+                // modes: ['tree','code'], 可以设置多种模式随意切换
+                mode: 'code', // tree，view，form，code，text
+                onError: function(err) {
+                    alert(err.toString());
+                }
+            };
+            // 实例化对象
+            var editor = new JSONEditor(container, options);
+
+            // JSON数据
+            var json = document.getElementById("yamldata").innerText;
+
+            // JSONEditor.set(data) 设置数据
+            editor.set(json);
+            // JSONEditor.get() 和 JSONEditor.getText() 获取数据
+            var json = editor.get();
+            console.log(JSON.stringify(json));
+
+            var text = editor.getText();
+            console.log(text);
+
+            // JSONEditor.setMode(mode) 设置模式
+            editor.setMode('tree');
+        </script>
+
+    </body>
+
+
+
+</html>

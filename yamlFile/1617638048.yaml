@@ -1,0 +1,32 @@
+step1:
+    name: /login
+    request:
+        method: GET
+        url: https://mubu.com/login
+        headers:
+            user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36
+                (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
+    validate:
+        status_code: 200
+step2:
+    name: /login/password
+    request:
+        method: GET
+        url: https://mubu.com/login/password
+        headers:
+            user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36
+                (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
+    validate:
+        status_code: 200
+step3:
+    name: /api/login/submit
+    request:
+        method: POST
+        url: https://mubu.com/api/login/submit
+        data: phone=18911467610&password=zx123123&remember=true
+        headers:
+            user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36
+                (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
+            content-type: application/x-www-form-urlencoded; charset=UTF-8
+    validate:
+        status_code: 200
